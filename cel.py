@@ -22,4 +22,21 @@ z = 0
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 ax.plot(x, y, z, label="Ellipse")
+
+#Plot Animation
+def update(frame):
+    # Update position
+    x_pos = r[frame] * np.cos(theta[frame])
+    y_pos = r[frame] * np.sin(theta[frame])
+    z_pos = 0 
+    # Create points
+    ax.scatter(x_pos, y_pos, z_pos , color='red', s=20)
+
+ani = FuncAnimation(fig, update, frames=n_points, interval=50, repeat=True)
+
 plt.show()
+
+
+
+
+
