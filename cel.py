@@ -23,26 +23,33 @@ own_sys_z = np.zeros_like(theta)
 own_sys_vec = np.vstack((own_sys_x,own_sys_y,own_sys_z))
 
 
-
 #Input Transformation
 rad_incline=np.deg2rad(incline)
+rad_z_incl=np.deg2rad(z_dir_incline)
 
-#Rotational Matrix for Inclination
-rot_mat_incl=np.array([
+#Rotational Matrix for Inclinations
+rot_mat_incl=np.array([   #Inclination
     [1, 0, 0],
     [0, np.cos(rad_incline), -np.sin(rad_incline)],
     [0, np.sin(rad_incline), np.cos(rad_incline)]  
 ])
 
-cart_sys_w_incline = np.dot(rot_mat_incl, own_sys_vec)
+z_rot_mat_incl=np.array([   # Rotation around z-Axis
+    [np.cos(rad_z_incl), -np.sin(rad_z_incl), 0],
+    [np.sin(rad_z_incl), np.cos(rad_z_incl), 0],
+    [0, 0, 1]  
+])
 
+cart_sys_w_incline = np.dot(z_rot_mat_incl, np.dot(rot_mat_incl, own_sys_vec))
 
 
 #Plot Ellipse
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 ax.plot(cart_sys_w_incline[0],cart_sys_w_incline[1],cart_sys_w_incline[2], label="Ellipse")
+ax.scatter(0, 0, 0 , color='yellow', s=30)
 ax.set_aspect('equal')
+
 
 
 #Plot Animation
