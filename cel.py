@@ -21,11 +21,44 @@ own_sys_x = r * np.cos(theta)
 own_sys_y = r * np.sin(theta)
 own_sys_z = np.zeros_like(theta)
 own_sys_vec = np.vstack((own_sys_x,own_sys_y,own_sys_z))
-
+print(type(own_sys_vec))
 
 #Input Transformation
 rad_incline=np.deg2rad(incline)
 rad_z_incl=np.deg2rad(z_dir_incline)
+
+
+def rotate_around_z(vec, deg):
+    if isinstance(vec, np.ndarray):
+        print("good input")
+        rad=np.deg2rad(deg)
+        z_rot_mat=np.array([   # Rotation around z-Axis
+            [np.cos(rad), -np.sin(rad), 0],
+            [np.sin(rad), np.cos(rad), 0],
+            [0, 0, 1] 
+        ])
+        z_rot_vec= np.dot(z_rot_mat, vec)
+        return z_rot_vec
+    else:
+        print("nah bro, z-rot imput is not an array")
+        return 
+    
+
+def rotate_around_x(vec,deg):
+    if isinstance(vec, np.ndarray):
+        print("good input")
+        rad=np.deg2rad(deg)
+        x_rot_mat=np.array([   #Inclination
+            [1, 0, 0],
+            [0, np.cos(rad), -np.sin(rad)],
+            [0, np.sin(rad), np.cos(rad)]  
+        ])
+        x_rot_vec = np.dot(x_rot_mat, vec)
+        return x_rot_vec
+    else:
+        print("nah bro, x-rot imput is not an array")
+        return 
+
 
 #Rotational Matrix for Inclinations
 rot_mat_incl=np.array([   #Inclination
@@ -41,6 +74,7 @@ z_rot_mat_incl=np.array([   # Rotation around z-Axis
 ])
 
 cart_sys_w_incline = np.dot(z_rot_mat_incl, np.dot(rot_mat_incl, own_sys_vec))
+rotate_around_z_axis(np.array([1,0,0]),30)
 
 
 #Plot Ellipse
