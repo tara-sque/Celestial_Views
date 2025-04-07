@@ -9,6 +9,7 @@ e = 0.9  # Eccentricity
 b = a*np.sqrt(1-e**2) #Semi-minor axis
 incline = 40 #degree compared to xy plane
 z_dir_incline = 30 #degree around z- Axis from x-Axis 
+peri_offset= 70 #degree around z
 
 n_points= 50 #number of points
 
@@ -59,6 +60,14 @@ def rotate_around_x(vec,deg):
         print("nah bro, x-rot imput is not an array")
         return 
 
+def all_orbit_adjustments(vec, peri_offset, incl, incl_rot):
+    vec=rotate_around_z(vec,peri_offset)
+    vec=rotate_around_x(vec, incl)
+    vec=rotate_around_z(vec, incl_rot)
+    return vec
+
+
+
 
 #Rotational Matrix for Inclinations
 rot_mat_incl=np.array([   #Inclination
@@ -73,8 +82,7 @@ z_rot_mat_incl=np.array([   # Rotation around z-Axis
     [0, 0, 1]  
 ])
 
-cart_sys_w_incline = np.dot(z_rot_mat_incl, np.dot(rot_mat_incl, own_sys_vec))
-rotate_around_z_axis(np.array([1,0,0]),30)
+cart_sys_w_incline =all_orbit_adjustments(own_sys_vec, peri_offset, incline, z_dir_incline)
 
 
 #Plot Ellipse
@@ -83,6 +91,7 @@ ax = fig.add_subplot(111, projection='3d')
 ax.plot(cart_sys_w_incline[0],cart_sys_w_incline[1],cart_sys_w_incline[2], label="Ellipse")
 ax.scatter(0, 0, 0 , color='yellow', s=30)
 ax.set_aspect('equal')
+ax.plot()
 
 
 
