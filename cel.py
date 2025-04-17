@@ -3,19 +3,47 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.animation import FuncAnimation
 
+"""
+class CelObj:
+  def __init__(name, a, e, incline, z_dir_incline, peri_offset  ):
+    self.name = name
+    self.a = a
+    self.e = e
+    self.b = a*np.sqrt(1-e**2)
+    self.incline = incline
+    self.z_dir_incline = z_dir_incline
+    self.peri_offset = peri_offset
+"""
+
+n_points= 100 #number of points -> Time
+
 #Ellipse Parameter
 a = 5  # Semi-major axis
-e = 0.9  # Eccentricity
+e = 0.7  # Eccentricity
 b = a*np.sqrt(1-e**2) #Semi-minor axis
 incline = 40 #degree compared to xy plane
 z_dir_incline = 30 #degree around z- Axis from x-Axis 
-peri_offset= 70 #degree around z
+peri_offset= 15 #degree around z
+orbital_period= 40 #h
+time = np.linspace(0, orbital_period, n_points)
+mean_anomaly = 2*np.pi/orbital_period * time
 
-n_points= 50 #number of points
+#Newtons Approximation for  Kepler's equation M = E - e * sin(E)
+eccentric_anomaly = mean_anomaly #initital guess
+for i in range(300):
+    func= eccentric_anomaly - e * np.sin(eccentric_anomaly) - mean_anomaly
+    func_fder_ecc_an= 1 - e * np.cos(eccentric_anomaly) 
+    eccentric_anomaly = eccentric_anomaly - func/func_fder_ecc_an
+print(eccentric_anomaly)
+
+
+theta = 2* np.arctan2(np.sqrt(1 + e) * np.sin(eccentric_anomaly/2), np.sqrt(1 - e) * np.cos(eccentric_anomaly/2)) #True anomaly correct speed?
+r = (a * (1 - e**2)) / (1 + e * np.cos(theta))
+
 
 #Ellipse in Polar Coords, "Sun" at Center(0,0)
-theta = np.linspace(0, 2 * np.pi, n_points) #True anomaly (just linear, "speed" wrong)
-r = (a * (1 - e**2)) / (1 + e * np.cos(theta))
+#theta = np.linspace(0, 2 * np.pi, n_points) #True anomaly (just linear, "speed" wrong)
+#r = (a * (1 - e**2)) / (1 + e * np.cos(theta))
 
 #Ellipse in Cartesian Coords, Sun at Center(0,0), no inclination = in xy-Plane)
 own_sys_x = r * np.cos(theta)
@@ -69,6 +97,7 @@ def all_orbit_adjustments(vec, peri_offset, incl, incl_rot):
 
 
 
+
 #Rotational Matrix for Inclinations
 rot_mat_incl=np.array([   #Inclination
     [1, 0, 0],
@@ -91,8 +120,8 @@ ax = fig.add_subplot(111, projection='3d')
 ax.plot(cart_sys_w_incline[0],cart_sys_w_incline[1],cart_sys_w_incline[2], label="Ellipse")
 ax.scatter(0, 0, 0 , color='yellow', s=30)
 ax.set_aspect('equal')
-ax.plot()
-
+plt.xlabel("x")
+plt.ylabel("y")
 
 
 #Plot Animation
